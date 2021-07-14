@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "br.zup.ot5";
+option java_outer_classname = "PixChallenge";
+option objc_class_prefix = "HLW";
+
+package br.zup.ot5;
+
+service PixChallengeService {
+  rpc send (PixChallengeRequest) returns (PixChallengeReply) {}
+}
+
+message PixChallengeRequest {
+  string name = 1;
+}
+
+message PixChallengeReply {
+  string message = 1;
+}
