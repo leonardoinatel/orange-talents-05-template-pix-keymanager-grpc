@@ -2,19 +2,39 @@ syntax = "proto3";
 
 option java_multiple_files = true;
 option java_package = "br.zup.ot5";
-option java_outer_classname = "PixChallenge";
-option objc_class_prefix = "HLW";
+option java_outer_classname = "ChavePixServiceOuterClass";
+//option objc_class_prefix = "HLW";
 
 package br.zup.ot5;
 
-service PixChallengeService {
-  rpc send (PixChallengeRequest) returns (PixChallengeReply) {}
+service KeymanagerRegistraGrpcService {
+
+  rpc cadastrar(RegistraChavePixRequest) returns (RegistraChavePixResponse) {}
+
 }
 
-message PixChallengeRequest {
-  string name = 1;
+enum TipoChave {
+  CHAVE_DESCONHECIDA = 0;
+  CPF = 1;
+  TEL = 2;
+  EMAIL = 3;
+  KEY = 4;
 }
 
-message PixChallengeReply {
-  string message = 1;
+enum TipoConta {
+  CONTA_DESCONHECIDA = 0;
+  CONTA_CORRENTE = 1;
+  CONTA_POUPANCA = 2;
+}
+
+message RegistraChavePixRequest {
+  string idCliente = 1;
+  TipoChave tipoChave = 2;
+  string chave = 3;
+  TipoConta tipoConta = 4;
+}
+
+message RegistraChavePixResponse {
+  string idPix = 1;
+  string idCliente = 2;
 }
