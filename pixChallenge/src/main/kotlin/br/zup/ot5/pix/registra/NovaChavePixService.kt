@@ -4,7 +4,6 @@ import br.zup.ot5.externo.ContasDeClientesNoItauClient
 import br.zup.ot5.shared.exception.ChavePixExistenteException
 import br.zup.ot5.shared.exception.ChavePixNaoEncontradaException
 import io.micronaut.validation.Validated
-import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
 import javax.transaction.Transactional
@@ -19,11 +18,11 @@ class NovaChavePixService(
 
     @Transactional
     fun cadastra(@Valid novaChave : NovaChavePix) : ChavePix {
+        if(chavePixRepository.existsByChave(novaChave.chave))
+            throw ChavePixExistenteException("Chave Pix - ${novaChave.chave} - já cadastrada no sistema")
+
         val response = itauClient.buscaContaPorTipo(novaChave.clienteId!!, novaChave.tipoConta!!.name)
         val conta = response.body()?.toModel() ?: throw ChavePixNaoEncontradaException("Cliente não encontrado")
-
-        if(chavePixRepository.existsByChave(novaChave.chave))
-        throw ChavePixExistenteException("Chave Pix - ${novaChave.chave} - já cadastrada no sistema")
 
         val chave = novaChave.toModel(conta)
 

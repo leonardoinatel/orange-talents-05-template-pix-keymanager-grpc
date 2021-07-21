@@ -25,10 +25,8 @@ class ErrorHandleInterceptor: MethodInterceptor<Any, Any>{
 
             val status = when(e) {
                 is ConstraintViolationException -> Status.INVALID_ARGUMENT.withDescription(e.message)
-                is IllegalStateException -> Status.FAILED_PRECONDITION.withDescription(e.message)
                 is ChavePixExistenteException -> Status.ALREADY_EXISTS.withDescription(e.message)
                 is ChavePixNaoEncontradaException -> Status.NOT_FOUND.withDescription(e.message)
-                is ConstraintViolationException -> Status.INVALID_ARGUMENT.withDescription(e.message)
 
                 else -> Status.UNKNOWN.withCause(e).withDescription("Erro inesperado")
             }
