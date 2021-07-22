@@ -3,14 +3,15 @@ syntax = "proto3";
 option java_multiple_files = true;
 option java_package = "br.zup.ot5";
 option java_outer_classname = "ChavePixServiceOuterClass";
-//option objc_class_prefix = "HLW";
 
 package br.zup.ot5;
 
 service KeymanagerRegistraGrpcService {
-
   rpc cadastrar(RegistraChavePixRequest) returns (RegistraChavePixResponse) {}
+}
 
+service KeymanagerRemoveGrpcService {
+  rpc remove(RemoveChavePixRequest) returns (RemoveChavePixResponse) {}
 }
 
 enum TipoChave {
@@ -26,7 +27,9 @@ enum TipoConta {
   CONTA_CORRENTE = 1;
   CONTA_POUPANCA = 2;
 }
-
+/*
+  Cadastrar
+*/
 message RegistraChavePixRequest {
   string idCliente = 1;
   TipoChave tipoChave = 2;
@@ -37,4 +40,17 @@ message RegistraChavePixRequest {
 message RegistraChavePixResponse {
   string idPix = 1;
   string idCliente = 2;
+}
+/**
+  remover
+*/
+message RemoveChavePixRequest {
+  string idPix = 1;
+  string idCliente = 2;
+}
+
+message RemoveChavePixResponse {
+  string idPix = 1;
+  string idCliente = 2;
+  string resultado = 3;
 }
