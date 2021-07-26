@@ -23,7 +23,7 @@ class NovaChavePix(
         return ChavePix(
             clienteId,
             TipoChaveEnum.valueOf(tipoChave!!.name),
-            if (tipoChave == TipoChaveEnum.KEY)
+            if (tipoChave == TipoChaveEnum.RANDOM)
                 UUID.randomUUID().toString()
             else chave,
             TipoContaEnum.valueOf(tipoConta!!.name),

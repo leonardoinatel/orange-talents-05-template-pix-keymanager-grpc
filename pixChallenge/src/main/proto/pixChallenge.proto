@@ -17,9 +17,9 @@ service KeymanagerRemoveGrpcService {
 enum TipoChave {
   CHAVE_DESCONHECIDA = 0;
   CPF = 1;
-  TEL = 2;
+  PHONE = 2;
   EMAIL = 3;
-  KEY = 4;
+  RANDOM = 4;
 }
 
 enum TipoConta {
