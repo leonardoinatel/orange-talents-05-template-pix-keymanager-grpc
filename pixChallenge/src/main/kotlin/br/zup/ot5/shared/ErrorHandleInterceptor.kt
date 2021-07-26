@@ -29,7 +29,7 @@ class ErrorHandleInterceptor: MethodInterceptor<Any, Any>{
                 is ChavePixNaoEncontradaException -> Status.NOT_FOUND.withDescription(e.message)
                 is IllegalStateException -> Status.INVALID_ARGUMENT.withDescription(e.message)
 
-                else -> Status.UNKNOWN.withCause(e).withDescription(e.message)
+                else -> Status.UNKNOWN.withCause(e).withDescription(e.stackTraceToString())
             }
 
             responseObserver.onError(status.asRuntimeException())

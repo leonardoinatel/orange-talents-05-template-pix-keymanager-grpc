@@ -4,10 +4,7 @@ import br.zup.ot5.KeymanagerRegistraGrpcServiceGrpc
 import br.zup.ot5.RegistraChavePixRequest
 import br.zup.ot5.TipoChave
 import br.zup.ot5.TipoConta
-import br.zup.ot5.externo.ContasDeClientesNoItauClient
-import br.zup.ot5.externo.DadosdaContaResponse
-import br.zup.ot5.externo.Instituicao
-import br.zup.ot5.externo.Titular
+import br.zup.ot5.externo.*
 import br.zup.ot5.pix.grpcenum.TipoChaveEnum
 import br.zup.ot5.pix.grpcenum.TipoContaEnum
 import io.grpc.ManagedChannel
@@ -26,6 +23,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
+import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 
@@ -37,6 +35,9 @@ internal class RegistraChaveEndpointTest(
 
     @Inject
     lateinit var itauClient: ContasDeClientesNoItauClient
+
+    @Inject
+    lateinit var bcbClient: DadosDeClienteNoBancoCentral
 
     @BeforeEach
     internal fun setUp() {
@@ -79,6 +80,8 @@ internal class RegistraChaveEndpointTest(
         //cenario
         `when`(itauClient.buscaContaPorTipo(CLIENTE_ID.toString(), "CONTA_CORRENTE")).thenReturn(HttpResponse.ok(dadosDaContaResponse()))
 
+        `when`(bcbClient.cadastrar(createdPixRequest())).thenReturn(HttpResponse.ok(createdPixResponse()))
+
         //acao
         val response = grpcClient.cadastrar(RegistraChavePixRequest.newBuilder()
             .setIdCliente(CLIENTE_ID.toString())
@@ -105,7 +108,7 @@ internal class RegistraChaveEndpointTest(
             grpcClient.cadastrar(
                 RegistraChavePixRequest.newBuilder()
                     .setIdCliente(CLIENTE_ID.toString())
-                    .setTipoChave(TipoChave.KEY)
+                    .setTipoChave(TipoChave.RANDOM)
                     .setChave("")
                     .setTipoConta(TipoConta.CONTA_CORRENTE)
                     .build()
@@ -152,9 +155,33 @@ internal class RegistraChaveEndpointTest(
         )
     }
 
+    private fun createdPixResponse(): CreatedPixResponse? {
+        return CreatedPixResponse(
+            TipoChaveEnum.EMAIL,
+            "rafael.pontes@gmail.com",
+            BankAccount("60701190", "1218", "291900", PixAccountType.CACC),
+            Owner("NATURAL_PERSON", "Rafael Ponte", "63657520325"),
+            LocalDateTime.now()
+        )
+    }
+
+    private fun createdPixRequest(): CreatedPixRequest {
+        return CreatedPixRequest(
+            TipoChaveEnum.EMAIL,
+            "rafael.pontes@gmail.com",
+            BankAccount("60701190", "1218", "291900", PixAccountType.CACC),
+            Owner("NATURAL_PERSON", "Rafael Ponte", "63657520325")
+        )
+    }
+
     @MockBean(ContasDeClientesNoItauClient::class)
     fun itauClient(): ContasDeClientesNoItauClient? {
         return Mockito.mock(ContasDeClientesNoItauClient::class.java)
+    }
+
+    @MockBean(DadosDeClienteNoBancoCentral::class)
+    fun bcbClient(): DadosDeClienteNoBancoCentral? {
+        return Mockito.mock(DadosDeClienteNoBancoCentral::class.java)
     }
 
     @Factory

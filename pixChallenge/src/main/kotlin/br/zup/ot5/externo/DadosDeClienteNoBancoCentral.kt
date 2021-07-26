@@ -51,7 +51,7 @@ data class CreatedPixRequest(
 }
 
 data class CreatedPixResponse(
-    val keyType: String,
+    val keyType: TipoChaveEnum,
     val key: String,
     val bankAccount: BankAccount,
     val owner: Owner,
